@@ -31,7 +31,7 @@ const LANGUAGES = [
 ];
 
 // Helper to generate random rotation between -12 and 12 degrees
-function getRandomRotation() {
+function getRandomRotation(): number {
   return Math.random() * 180 - 90;
 }
 
@@ -63,8 +63,8 @@ export default function Flashcards() {
 
   // Track which card is being dragged (index in queue, not cardIdx)
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
-  const dragStartX = useRef(0);
-  const dragDeltaX = useRef(0);
+  const dragStartX = useRef<number>(0);
+  const dragDeltaX = useRef<number>(0);
 
   // Track cards currently animating out, so we can allow new drags while previous card is animating
   const [animatingOutCards, setAnimatingOutCards] = useState<Set<number>>(new Set());
@@ -77,79 +77,36 @@ export default function Flashcards() {
 
   // Per-card state: whether the card is showing the translation in the bottom left
   // We'll use a map from cardIdx to boolean (true = show translation, false = hide translation)
-  const [showTranslation, setShowTranslation] = useState<{ [cardIdx: number]: boolean }>(
+  const [showTranslation, setShowTranslation] = useState<Record<number, boolean>>(
     () => Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false]))
   );
 
   // Per-card state: whether the card is "flipped" (i.e., black background)
-  const [cardFlipped, setCardFlipped] = useState<{ [cardIdx: number]: boolean }>(
+  const [cardFlipped, setCardFlipped] = useState<Record<number, boolean>>(
     () => Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false]))
   );
 
   // Per-card state: animate black fill
-  const [cardFilling, setCardFilling] = useState<{ [cardIdx: number]: boolean }>(
+  const [cardFilling, setCardFilling] = useState<Record<number, boolean>>(
     () => Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false]))
   );
 
   // Per-card state: black fill progress (0 to 1)
-  const [cardFillProgress, setCardFillProgress] = useState<{ [cardIdx: number]: number }>(
+  const [cardFillProgress, setCardFillProgress] = useState<Record<number, number>>(
     () => Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0]))
   );
 
   // Per-card state: animating black shrink (for white flip)
-  const [cardUnfilling, setCardUnfilling] = useState<{ [cardIdx: number]: boolean }>(
+  const [cardUnfilling, setCardUnfilling] = useState<Record<number, boolean>>(
     () => Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false]))
   );
   // Per-card state: black shrink progress (1 to 0)
-  const [cardUnfillProgress, setCardUnfillProgress] = useState<{ [cardIdx: number]: number }>(
+  const [cardUnfillProgress, setCardUnfillProgress] = useState<Record<number, number>>(
     () => Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0]))
   );
 
   // Helper to reset cards in with new language selection
-  function animateCardsIn() {
-    setInitialRotations(Array.from({ length: CARD_COUNT }, () => getRandomRotation()));
-    setAnims(
-      Array.from({ length: CARD_COUNT }, (_, idx) => ({
-        top: -2000,
-        opacity: 1,
-        transition: "none",
-        rotate: initialRotations[idx] ?? getRandomRotation(),
-        x: 0,
-      }))
-    );
-    // Animate cards in, staggered with delay, from back to front
-    Array.from({ length: CARD_COUNT }, (_, i) => {
-      setTimeout(() => {
-        setAnims((prev) => {
-          const next = [...prev];
-          next[i] = {
-            top: OFFSET * (CARD_COUNT - 1 - i),
-            opacity: 1,
-            transition:
-              "top 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1)",
-            rotate: 0,
-            x: 0,
-          };
-          return next;
-        });
-      }, 100 + i * 100);
-    });
-    setQueue(Array.from({ length: CARD_COUNT }, (_, i) => i));
-    setAnimatingOutCards(new Set());
-    setDraggingIdx(null);
-    // Reset all cards to hide translation
-    setShowTranslation(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
-    // Reset all cards to not flipped
-    setCardFlipped(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
-    // Reset all cards to not filling
-    setCardFilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
-    // Reset all cards to fill progress 0
-    setCardFillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
-    // Reset all cards to not unfilling
-    setCardUnfilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
-    // Reset all cards to unfill progress 0
-    setCardUnfillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
-  }
+  
 
   useEffect(() => {
     // Only run on client
@@ -204,11 +161,10 @@ export default function Flashcards() {
     setCardUnfilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
     // Reset all cards to unfill progress 0
     setCardUnfillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, initialRotations, CARD_COUNT, langShuffleKey]);
 
   // Drag handlers for the top card
-  function handleDragStart(e: React.MouseEvent | React.TouchEvent) {
+  function handleDragStart(e: React.MouseEvent | React.TouchEvent): void {
     // Only allow drag if not already dragging and the top card is not animating out
     if (draggingIdx !== null) return;
     const topQueueIdx = queue.length - 1;
@@ -233,7 +189,7 @@ export default function Flashcards() {
     });
   }
 
-  function handleDragMove(e: React.MouseEvent | React.TouchEvent) {
+  function handleDragMove(e: React.MouseEvent | React.TouchEvent): void {
     if (draggingIdx === null) return;
     let clientX = 0;
     if ("touches" in e) {
@@ -257,7 +213,7 @@ export default function Flashcards() {
     });
   }
 
-  function handleDragEnd() {
+  function handleDragEnd(): void {
     if (draggingIdx === null) return;
     const deltaX = dragDeltaX.current;
     const cardIdx = queue[draggingIdx];
@@ -372,53 +328,56 @@ export default function Flashcards() {
   }
 
   // Mouse/touch event handlers for the top card
-  function addDragHandlers(props: any) {
-        return {
-          onMouseDown: (e: React.MouseEvent) => {
-            e.preventDefault();
-            handleDragStart(e);
-            window.addEventListener("mousemove", handleDragMoveWin);
-            window.addEventListener("mouseup", handleDragEndWin);
-          },
-          onTouchStart: (e: React.TouchEvent) => {
-            handleDragStart(e);
-            window.addEventListener("touchmove", handleDragMoveWin, { passive: false });
-           window.addEventListener("touchend", handleDragEndWin);
-         },
-          ...props,
-        };
-      }
+  function addDragHandlers<T extends object>(props: T): T & {
+    onMouseDown: (e: React.MouseEvent) => void;
+    onTouchStart: (e: React.TouchEvent) => void;
+  } {
+    return {
+      onMouseDown: (e: React.MouseEvent) => {
+        e.preventDefault();
+        handleDragStart(e);
+        window.addEventListener("mousemove", handleDragMoveWin as EventListener);
+        window.addEventListener("mouseup", handleDragEndWin as EventListener);
+      },
+      onTouchStart: (e: React.TouchEvent) => {
+        handleDragStart(e);
+        window.addEventListener("touchmove", handleDragMoveWin as EventListener, { passive: false });
+        window.addEventListener("touchend", handleDragEndWin as EventListener);
+      },
+      ...props,
+    };
+  }
 
   // These are needed to handle drag outside the card
-  function handleDragMoveWin(e: MouseEvent | TouchEvent) {
+  function handleDragMoveWin(e: MouseEvent | TouchEvent): void {
     if ("touches" in e) {
       if (e.touches.length === 0) return;
-      handleDragMove(e as any);
+      handleDragMove(e as unknown as React.TouchEvent);
     } else {
-      handleDragMove(e as any);
+      handleDragMove(e as unknown as React.MouseEvent);
     }
   }
-  function handleDragEndWin(e: MouseEvent | TouchEvent) {
+  function handleDragEndWin(): void {
     handleDragEnd();
-    window.removeEventListener("mousemove", handleDragMoveWin);
-    window.removeEventListener("mouseup", handleDragEndWin);
-    window.removeEventListener("touchmove", handleDragMoveWin);
-    window.removeEventListener("touchend", handleDragEndWin);
+    window.removeEventListener("mousemove", handleDragMoveWin as EventListener);
+    window.removeEventListener("mouseup", handleDragEndWin as EventListener);
+    window.removeEventListener("touchmove", handleDragMoveWin as EventListener);
+    window.removeEventListener("touchend", handleDragEndWin as EventListener);
   }
 
   useEffect(() => {
     // Clean up listeners on unmount
     return () => {
-      window.removeEventListener("mousemove", handleDragMoveWin);
-      window.removeEventListener("mouseup", handleDragEndWin);
-      window.removeEventListener("touchmove", handleDragMoveWin);
-      window.removeEventListener("touchend", handleDragEndWin);
+      window.removeEventListener("mousemove", handleDragMoveWin as EventListener);
+      window.removeEventListener("mouseup", handleDragEndWin as EventListener);
+      window.removeEventListener("touchmove", handleDragMoveWin as EventListener);
+      window.removeEventListener("touchend", handleDragEndWin as EventListener);
     };
     // eslint-disable-next-line
   }, []);
 
   // Handle language change: shuffle out, then shuffle in with new language
-  function handleLangChange(type: "from" | "to", value: string) {
+  function handleLangChange(type: "from" | "to", value: string): void {
     if (type === "from") {
       setFromLang(value);
     } else {
@@ -459,7 +418,7 @@ export default function Flashcards() {
   }
 
   // Handler to show/hide translation in the bottom left and flip card
-  function handleShowTranslation(cardIdx: number) {
+  function handleShowTranslation(cardIdx: number): void {
     // If flipping to black, animate fill first, then flip
     if (!cardFlipped[cardIdx]) {
       setCardFilling((prev) => ({
@@ -601,11 +560,7 @@ export default function Flashcards() {
           const word = words[cardIdx];
 
           // Always show the fromLang word in the center
-          const shownLang = fromLang;
-
-          // For accessibility, get the label for the language
-          const shownLangLabel =
-            LANGUAGES.find((l) => l.code === shownLang)?.label ?? shownLang;
+          // const shownLang = fromLang;
 
           // The button label: "Show [other language]"
           const flipButtonLabel = !showTranslation[cardIdx]
