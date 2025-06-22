@@ -1,0 +1,12 @@
+[
+  { "english": "Apple", "spanish": "Manzana", "german": "Apfel" },
+  { "english": "House", "spanish": "Casa", "german": "Haus" },
+  { "english": "Dog", "spanish": "Perro", "german": "Hund" },
+  { "english": "Cat", "spanish": "Gato", "german": "Katze" },
+  { "english": "Book", "spanish": "Libro", "german": "Buch" },
+  { "english": "Water", "spanish": "Agua", "german": "Wasser" },
+  { "english": "Car", "spanish": "Coche", "german": "Auto" },
+  { "english": "Sun", "spanish": "Sol", "german": "Sonne" },
+  { "english": "School", "spanish": "Escuela", "german": "Schule" },
+  { "english": "Friend", "spanish": "Amigo", "german": "Freund" }
+]
