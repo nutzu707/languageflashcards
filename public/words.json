@@ -1,53 +1,53 @@
 {
   "basic_interactions": [
-    { "english": "Hello", "spanish": "Hola", "german": "Hallo" },
-    { "english": "Goodbye", "spanish": "Adiós", "german": "Auf Wiedersehen" },
-    { "english": "Please", "spanish": "Por favor", "german": "Bitte" },
-    { "english": "Thank you", "spanish": "Gracias", "german": "Danke" },
-    { "english": "Yes", "spanish": "Sí", "german": "Ja" },
-    { "english": "No", "spanish": "No", "german": "Nein" }
+    { "english": "Hello", "spanish": "Hola", "german": "Hallo", "french": "Bonjour", "italian": "Ciao", "japanese": "こんにちは" },
+    { "english": "Goodbye", "spanish": "Adiós", "german": "Auf Wiedersehen", "french": "Au revoir", "italian": "Arrivederci", "japanese": "さようなら" },
+    { "english": "Please", "spanish": "Por favor", "german": "Bitte", "french": "S'il vous plaît", "italian": "Per favore", "japanese": "お願いします" },
+    { "english": "Thank you", "spanish": "Gracias", "german": "Danke", "french": "Merci", "italian": "Grazie", "japanese": "ありがとう" },
+    { "english": "Yes", "spanish": "Sí", "german": "Ja", "french": "Oui", "italian": "Sì", "japanese": "はい" },
+    { "english": "No", "spanish": "No", "german": "Nein", "french": "Non", "italian": "No", "japanese": "いいえ" }
   ],
   "common_statements": [
-    { "english": "How are you?", "spanish": "¿Cómo estás?", "german": "Wie geht's?" },
-    { "english": "My name is...", "spanish": "Me llamo...", "german": "Ich heiße..." },
-    { "english": "I don't understand", "spanish": "No entiendo", "german": "Ich verstehe nicht" },
-    { "english": "Where is the bathroom?", "spanish": "¿Dónde está el baño?", "german": "Wo ist die Toilette?" }
+    { "english": "How are you?", "spanish": "¿Cómo estás?", "german": "Wie geht's?", "french": "Comment ça va ?", "italian": "Come stai?", "japanese": "お元気ですか？" },
+    { "english": "My name is...", "spanish": "Me llamo...", "german": "Ich heiße...", "french": "Je m'appelle...", "italian": "Mi chiamo...", "japanese": "私の名前は..." },
+    { "english": "I don't understand", "spanish": "No entiendo", "german": "Ich verstehe nicht", "french": "Je ne comprends pas", "italian": "Non capisco", "japanese": "わかりません" },
+    { "english": "Where is the bathroom?", "spanish": "¿Dónde está el baño?", "german": "Wo ist die Toilette?", "french": "Où sont les toilettes ?", "italian": "Dov'è il bagno?", "japanese": "トイレはどこですか？" }
   ],
   "days": [
-    { "english": "Monday", "spanish": "Lunes", "german": "Montag" },
-    { "english": "Tuesday", "spanish": "Martes", "german": "Dienstag" },
-    { "english": "Wednesday", "spanish": "Miércoles", "german": "Mittwoch" },
-    { "english": "Thursday", "spanish": "Jueves", "german": "Donnerstag" },
-    { "english": "Friday", "spanish": "Viernes", "german": "Freitag" },
-    { "english": "Saturday", "spanish": "Sábado", "german": "Samstag" },
-    { "english": "Sunday", "spanish": "Domingo", "german": "Sonntag" }
+    { "english": "Monday", "spanish": "Lunes", "german": "Montag", "french": "Lundi", "italian": "Lunedì", "japanese": "月曜日" },
+    { "english": "Tuesday", "spanish": "Martes", "german": "Dienstag", "french": "Mardi", "italian": "Martedì", "japanese": "火曜日" },
+    { "english": "Wednesday", "spanish": "Miércoles", "german": "Mittwoch", "french": "Mercredi", "italian": "Mercoledì", "japanese": "水曜日" },
+    { "english": "Thursday", "spanish": "Jueves", "german": "Donnerstag", "french": "Jeudi", "italian": "Giovedì", "japanese": "木曜日" },
+    { "english": "Friday", "spanish": "Viernes", "german": "Freitag", "french": "Vendredi", "italian": "Venerdì", "japanese": "金曜日" },
+    { "english": "Saturday", "spanish": "Sábado", "german": "Samstag", "french": "Samedi", "italian": "Sabato", "japanese": "土曜日" },
+    { "english": "Sunday", "spanish": "Domingo", "german": "Sonntag", "french": "Dimanche", "italian": "Domenica", "japanese": "日曜日" }
   ],
   "numbers": [
-    { "english": "One", "spanish": "Uno", "german": "Eins" },
-    { "english": "Two", "spanish": "Dos", "german": "Zwei" },
-    { "english": "Three", "spanish": "Tres", "german": "Drei" },
-    { "english": "Four", "spanish": "Cuatro", "german": "Vier" },
-    { "english": "Five", "spanish": "Cinco", "german": "Fünf" },
-    { "english": "Six", "spanish": "Seis", "german": "Sechs" },
-    { "english": "Seven", "spanish": "Siete", "german": "Sieben" },
-    { "english": "Eight", "spanish": "Ocho", "german": "Acht" },
-    { "english": "Nine", "spanish": "Nueve", "german": "Neun" },
-    { "english": "Ten", "spanish": "Diez", "german": "Zehn" }
+    { "english": "One", "spanish": "Uno", "german": "Eins", "french": "Un", "italian": "Uno", "japanese": "一" },
+    { "english": "Two", "spanish": "Dos", "german": "Zwei", "french": "Deux", "italian": "Due", "japanese": "二" },
+    { "english": "Three", "spanish": "Tres", "german": "Drei", "french": "Trois", "italian": "Tre", "japanese": "三" },
+    { "english": "Four", "spanish": "Cuatro", "german": "Vier", "french": "Quatre", "italian": "Quattro", "japanese": "四" },
+    { "english": "Five", "spanish": "Cinco", "german": "Fünf", "french": "Cinq", "italian": "Cinque", "japanese": "五" },
+    { "english": "Six", "spanish": "Seis", "german": "Sechs", "french": "Six", "italian": "Sei", "japanese": "六" },
+    { "english": "Seven", "spanish": "Siete", "german": "Sieben", "french": "Sept", "italian": "Sette", "japanese": "七" },
+    { "english": "Eight", "spanish": "Ocho", "german": "Acht", "french": "Huit", "italian": "Otto", "japanese": "八" },
+    { "english": "Nine", "spanish": "Nueve", "german": "Neun", "french": "Neuf", "italian": "Nove", "japanese": "九" },
+    { "english": "Ten", "spanish": "Diez", "german": "Zehn", "french": "Dix", "italian": "Dieci", "japanese": "十" }
   ],
   "verbs": [
-    { "english": "To be", "spanish": "Ser/Estar", "german": "Sein" },
-    { "english": "To have", "spanish": "Tener", "german": "Haben" },
-    { "english": "To go", "spanish": "Ir", "german": "Gehen" },
-    { "english": "To eat", "spanish": "Comer", "german": "Essen" },
-    { "english": "To drink", "spanish": "Beber", "german": "Trinken" },
-    { "english": "To see", "spanish": "Ver", "german": "Sehen" }
+    { "english": "To be", "spanish": "Ser/Estar", "german": "Sein", "french": "Être", "italian": "Essere", "japanese": "である" },
+    { "english": "To have", "spanish": "Tener", "german": "Haben", "french": "Avoir", "italian": "Avere", "japanese": "持つ" },
+    { "english": "To go", "spanish": "Ir", "german": "Gehen", "french": "Aller", "italian": "Andare", "japanese": "行く" },
+    { "english": "To eat", "spanish": "Comer", "german": "Essen", "french": "Manger", "italian": "Mangiare", "japanese": "食べる" },
+    { "english": "To drink", "spanish": "Beber", "german": "Trinken", "french": "Boire", "italian": "Bere", "japanese": "飲む" },
+    { "english": "To see", "spanish": "Ver", "german": "Sehen", "french": "Voir", "italian": "Vedere", "japanese": "見る" }
   ],
   "colors": [
-    { "english": "Red", "spanish": "Rojo", "german": "Rot" },
-    { "english": "Blue", "spanish": "Azul", "german": "Blau" },
-    { "english": "Green", "spanish": "Verde", "german": "Grün" },
-    { "english": "Yellow", "spanish": "Amarillo", "german": "Gelb" },
-    { "english": "Black", "spanish": "Negro", "german": "Schwarz" },
-    { "english": "White", "spanish": "Blanco", "german": "Weiß" }
+    { "english": "Red", "spanish": "Rojo", "german": "Rot", "french": "Rouge", "italian": "Rosso", "japanese": "赤" },
+    { "english": "Blue", "spanish": "Azul", "german": "Blau", "french": "Bleu", "italian": "Blu", "japanese": "青" },
+    { "english": "Green", "spanish": "Verde", "german": "Grün", "french": "Vert", "italian": "Verde", "japanese": "緑" },
+    { "english": "Yellow", "spanish": "Amarillo", "german": "Gelb", "french": "Jaune", "italian": "Giallo", "japanese": "黄色" },
+    { "english": "Black", "spanish": "Negro", "german": "Schwarz", "french": "Noir", "italian": "Nero", "japanese": "黒" },
+    { "english": "White", "spanish": "Blanco", "german": "Weiß", "french": "Blanc", "italian": "Bianco", "japanese": "白" }
   ]
 }

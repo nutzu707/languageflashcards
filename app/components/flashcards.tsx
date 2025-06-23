@@ -5,12 +5,26 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 // Import the words from the public directory
 import wordsData from "../../public/words.json";
 
-// Add german to the Word type
-type Word = {
-  english: string;
-  spanish: string;
-  german: string;
-};
+// Dynamically determine all language codes and labels from the first word in the first category
+function getLanguagesFromWordsData(wordsData: any) {
+  // Find the first category with at least one word
+  const firstCategoryKey = Object.keys(wordsData).find(
+    (cat) => Array.isArray(wordsData[cat]) && wordsData[cat].length > 0
+  );
+  if (!firstCategoryKey) return [];
+  const firstWord = wordsData[firstCategoryKey][0];
+  if (!firstWord) return [];
+  // Map language codes to labels (capitalize first letter)
+  return Object.keys(firstWord).map((code) => ({
+    code,
+    label: code.charAt(0).toUpperCase() + code.slice(1),
+  }));
+}
+
+const LANGUAGES = getLanguagesFromWordsData(wordsData);
+
+// Type for a word: all keys are string, all values are string
+type Word = Record<string, string>;
 
 type CardAnim = {
   top: number;
@@ -23,12 +37,6 @@ type CardAnim = {
 // Make the offset a bit larger for bigger cards
 const OFFSET = 5;
 const DRAG_THRESHOLD = 100; // px, a bit longer for bigger cards
-
-const LANGUAGES = [
-  { code: "english", label: "English" },
-  { code: "spanish", label: "Spanish" },
-  { code: "german", label: "German" },
-];
 
 // Helper to generate random rotation between -12 and 12 degrees
 function getRandomRotation(): number {
@@ -55,8 +63,13 @@ export default function Flashcards() {
   const [category, setCategory] = useState<string>(CATEGORY_KEYS[0] || "");
 
   // Language selection state
-  const [fromLang, setFromLang] = useState<string>("english");
-  const [toLang, setToLang] = useState<string>("spanish");
+  // Default to first and second language in LANGUAGES, fallback to "english"/"spanish"
+  const [fromLang, setFromLang] = useState<string>(
+    LANGUAGES[0]?.code || "english"
+  );
+  const [toLang, setToLang] = useState<string>(
+    LANGUAGES[1]?.code || "spanish"
+  );
   // Used to trigger shuffle animation when language or category changes
   const [langShuffleKey, setLangShuffleKey] = useState<number>(0);
 
@@ -124,6 +137,26 @@ export default function Flashcards() {
     () => Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0]))
   );
 
+  // --- New state for the "press me" arrow and text ---
+  // Only show on first page load, never again after reload, even if data changes
+  const [showPressMe, setShowPressMe] = useState(true);
+  const hasShownPressMe = useRef(false);
+
+  useEffect(() => {
+    // Only run on client
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only show "press me" on first mount, never again
+    if (!hasShownPressMe.current) {
+      setShowPressMe(true);
+      hasShownPressMe.current = true;
+    } else {
+      setShowPressMe(false);
+    }
+  }, []);
+
   // Helper to reset cards in with new language selection
   // (no-op, handled in useEffect below)
 
@@ -149,13 +182,9 @@ export default function Flashcards() {
     setCardUnfilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
     setCardUnfillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
     setLangShuffleKey((k) => k + 1); // force shuffle animation
+    // Do NOT set showPressMe here, so it only shows on first page load
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category, CARD_COUNT]);
-
-  useEffect(() => {
-    // Only run on client
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!mounted || initialRotations.length !== CARD_COUNT) return;
@@ -203,6 +232,7 @@ export default function Flashcards() {
     setCardUnfilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
     // Reset all cards to unfill progress 0
     setCardUnfillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
+    // Do NOT set showPressMe here, so it only shows on first page load
   }, [mounted, initialRotations, CARD_COUNT, langShuffleKey]);
 
   // Drag handlers for the top card
@@ -484,6 +514,9 @@ export default function Flashcards() {
 
   // Handler to show/hide translation in the bottom left and flip card
   function handleShowTranslation(cardIdx: number): void {
+    // Hide the "press me" arrow and text on first press
+    setShowPressMe(false);
+
     // If flipping to black, animate fill first, then flip
     if (!cardFlipped[cardIdx]) {
       setCardFilling((prev) => ({
@@ -609,6 +642,13 @@ export default function Flashcards() {
         .flip-btn-transition {
           transition: background-color 0.4s, color 0.5s;
         }
+        .press-me-arrow {
+          animation: pressme-bounce 1.2s infinite;
+        }
+        @keyframes pressme-bounce {
+          0%, 100% { transform: translateY(0);}
+          50% { transform: translateY(-8px);}
+        }
         `}
       </style>
       <div className="relative w-[480px] h-[640px]">
@@ -687,10 +727,13 @@ export default function Flashcards() {
           const buttonBgColor = isCardBlack ? "bg-white" : "bg-black";
           const buttonIconColor = isCardBlack ? "#000" : "#fff";
 
+          // Only show the "press me" arrow and text on the top card, on first page load, and only if not pressed yet
+          const showPressMeHere = showPressMe && isTop && !showTranslation[cardIdx] && !cardFilling[cardIdx] && !cardFlipped[cardIdx] && !cardUnfilling[cardIdx];
+
           return (
             <div
               key={cardIdx}
-              className={`absolute left-0 right-0 mx-auto w-[420px] h-[520px] rounded-3xl border touch-none overflow-hidden ${cardBgClass} ${borderColorClass}`}
+              className={`absolute left-0 right-0 mx-auto w-[420px] h-[520px] rounded-3xl border  overflow-hidden ${cardBgClass} ${borderColorClass}`}
               style={{
                 top: anim.top ?? -2000,
                 zIndex: i + 1,
@@ -725,7 +768,7 @@ export default function Flashcards() {
                   }}
                 />
               )}
-              <div className="px-8 py-6 h-full select-none pointer-events-none relative z-10 flex flex-col">
+              <div className="px-8 py-6 h-full select-none pointer-events-auto relative z-10 flex flex-col">
                 {/* Word with color transition as black fill crosses */}
                 <div className="relative w-full flex" style={{height: "56px"}}>
                   {showWord && (
@@ -739,10 +782,37 @@ export default function Flashcards() {
                         userSelect: "none",
                       }}
                     >
-                      {word?.[fromLang as keyof Word]}
+                      {word?.[fromLang]}
                     </span>
                   )}
                 </div>
+                {/* "Press me" arrow and text, only on first page load and only until pressed */}
+                {showPressMeHere && (
+                  <div
+                    className="absolute bottom-6 right-24 flex flex-col items-center"
+                    style={{zIndex: 20, pointerEvents: "none"}}
+                  >
+                    <span className="text-black text-lg font-semibold mb-1">press me</span>
+                    {/* Arrow SVG pointing right */}
+                    <svg
+                      className="press-me-arrow"
+                      width="32"
+                      height="32"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      style={{display: "block"}}
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4 16h20m0 0l-7-7m7 7l-7 7"
+                        stroke="#222"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                )}
                 <button
                   type="button"
                   className={`w-6 h-6 rounded-full cursor-pointer absolute bottom-6 right-8 flex items-center justify-center flip-btn-transition ${buttonBgColor}`}
@@ -771,7 +841,7 @@ export default function Flashcards() {
                       transition: "color 0.25s",
                     }}
                   >
-                    <span className="text-[#FAFAFA]">{word?.[toLang as keyof Word]}</span>
+                    <span className="text-[#FAFAFA]">{word?.[toLang]}</span>
                   </div>
                 )}
               </div>
@@ -779,16 +849,19 @@ export default function Flashcards() {
           );
         })}
       </div>
-      <div className="flex flex-row gap-12 mt-12 items-center">
-        <div className="flex flex-col items-center">
-          <label htmlFor="from-lang" className="mb-2 text-lg text-gray-600 font-semibold">
-            FROM:
+      <div className="flex flex-row gap-4 mt-12 items-center">
+        <div className="flex">
+          <label htmlFor="from-lang" className="text-lg mr-2 pt-0.5">
+            Learn
           </label>
           <select
             id="from-lang"
-            className="border rounded px-4 py-2 text-lg"
+            className="border-2 border-[#E6E6E6] rounded-2xl px-4 pb-0.5 text-lg appearance-none cursor-pointer"
             value={fromLang}
             onChange={(e) => handleLangChange("from", e.target.value)}
+            style={{
+              backgroundImage: "none",
+            }}
           >
             {LANGUAGES.filter((l) => l.code !== toLang).map((lang) => (
               <option key={lang.code} value={lang.code}>
@@ -797,13 +870,13 @@ export default function Flashcards() {
             ))}
           </select>
         </div>
-        <div className="flex flex-col items-center">
-          <label htmlFor="to-lang" className="mb-2 text-lg text-gray-600 font-semibold">
-            TO:
+        <div className="flex">
+          <label htmlFor="to-lang" className="text-lg mr-2 pt-0.5">
+            from
           </label>
           <select
             id="to-lang"
-            className="border rounded px-4 py-2 text-lg"
+            className="border-2 border-[#E6E6E6] rounded-2xl px-4 pb-0.5 text-lg appearance-none cursor-pointer"
             value={toLang}
             onChange={(e) => handleLangChange("to", e.target.value)}
           >
@@ -814,13 +887,13 @@ export default function Flashcards() {
             ))}
           </select>
         </div>
-        <div className="flex flex-col items-center">
-          <label htmlFor="category" className="mb-2 text-lg text-gray-600 font-semibold">
-            CATEGORY:
+        <div className="flex">
+          <label htmlFor="category" className="text-lg mr-2 pt-0.5">
+            in
           </label>
           <select
             id="category"
-            className="border rounded px-4 py-2 text-lg"
+            className="border-2 border-[#E6E6E6] rounded-2xl px-4 pb-0.5 text-lg appearance-none cursor-pointer"
             value={category}
             onChange={(e) => handleCategoryChange(e.target.value)}
           >
