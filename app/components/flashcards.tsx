@@ -5,8 +5,25 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 // Import the words from the public directory
 import wordsData from "../../public/words.json";
 
+// Type for a word: all keys are string, all values are string
+type Word = Record<string, string>;
+
+// Type for CardAnim
+type CardAnim = {
+  top: number;
+  opacity: number;
+  transition: string;
+  rotate: number;
+  x?: number; // for drag
+};
+
+// Helper to generate random rotation between -12 and 12 degrees
+function getRandomRotation(): number {
+  return Math.random() * 180 - 90;
+}
+
 // Dynamically determine all language codes and labels from the first word in the first category
-function getLanguagesFromWordsData(wordsData: any) {
+function getLanguagesFromWordsData(wordsData: Record<string, Word[]>): { code: string; label: string }[] {
   // Find the first category with at least one word
   const firstCategoryKey = Object.keys(wordsData).find(
     (cat) => Array.isArray(wordsData[cat]) && wordsData[cat].length > 0
@@ -21,27 +38,7 @@ function getLanguagesFromWordsData(wordsData: any) {
   }));
 }
 
-const LANGUAGES = getLanguagesFromWordsData(wordsData);
-
-// Type for a word: all keys are string, all values are string
-type Word = Record<string, string>;
-
-type CardAnim = {
-  top: number;
-  opacity: number;
-  transition: string;
-  rotate: number;
-  x?: number; // for drag
-};
-
-// Make the offset a bit larger for bigger cards
-const OFFSET = 5;
-const DRAG_THRESHOLD = 100; // px, a bit longer for bigger cards
-
-// Helper to generate random rotation between -12 and 12 degrees
-function getRandomRotation(): number {
-  return Math.random() * 180 - 90;
-}
+const LANGUAGES = getLanguagesFromWordsData(wordsData as Record<string, Word[]>);
 
 // Extract categories from wordsData
 const CATEGORY_KEYS = Object.keys(wordsData);
@@ -54,6 +51,10 @@ const CATEGORY_LABELS: Record<string, string> = {
   verbs: "Verbs",
   colors: "Colors",
 };
+
+// Make the offset a bit larger for bigger cards
+const OFFSET = 5;
+const DRAG_THRESHOLD = 100; // px, a bit longer for bigger cards
 
 export default function Flashcards() {
   // To avoid hydration mismatch, render nothing until mounted
@@ -76,7 +77,7 @@ export default function Flashcards() {
   // Get the words for the selected category from the imported JSON
   const words: Word[] = useMemo(() => {
     if (!category) return [];
-    const arr = (wordsData as any)[category];
+    const arr = (wordsData as Record<string, Word[]>)[category];
     return Array.isArray(arr) ? arr : [];
   }, [category]);
 
@@ -156,9 +157,6 @@ export default function Flashcards() {
       setShowPressMe(false);
     }
   }, []);
-
-  // Helper to reset cards in with new language selection
-  // (no-op, handled in useEffect below)
 
   // When category changes, reset all per-card state and anims
   useEffect(() => {
