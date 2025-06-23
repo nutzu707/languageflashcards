@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 
 // Import the words from the public directory
 import wordsData from "../../public/words.json";
@@ -35,12 +35,37 @@ function getRandomRotation(): number {
   return Math.random() * 180 - 90;
 }
 
+// Extract categories from wordsData
+const CATEGORY_KEYS = Object.keys(wordsData);
+
+const CATEGORY_LABELS: Record<string, string> = {
+  basic_interactions: "Basic Interactions",
+  common_statements: "Common Statements",
+  days: "Days of the Week",
+  numbers: "Numbers",
+  verbs: "Verbs",
+  colors: "Colors",
+};
+
 export default function Flashcards() {
   // To avoid hydration mismatch, render nothing until mounted
   const [mounted, setMounted] = useState(false);
 
-  // Get the words from the imported JSON
-  const words: Word[] = Array.isArray(wordsData) ? wordsData : [];
+  // Category selection state
+  const [category, setCategory] = useState<string>(CATEGORY_KEYS[0] || "");
+
+  // Language selection state
+  const [fromLang, setFromLang] = useState<string>("english");
+  const [toLang, setToLang] = useState<string>("spanish");
+  // Used to trigger shuffle animation when language or category changes
+  const [langShuffleKey, setLangShuffleKey] = useState<number>(0);
+
+  // Get the words for the selected category from the imported JSON
+  const words: Word[] = useMemo(() => {
+    if (!category) return [];
+    const arr = (wordsData as any)[category];
+    return Array.isArray(arr) ? arr : [];
+  }, [category]);
 
   const CARD_COUNT = words.length;
 
@@ -68,12 +93,6 @@ export default function Flashcards() {
 
   // Track cards currently animating out, so we can allow new drags while previous card is animating
   const [animatingOutCards, setAnimatingOutCards] = useState<Set<number>>(new Set());
-
-  // Language selection state
-  const [fromLang, setFromLang] = useState<string>("english");
-  const [toLang, setToLang] = useState<string>("spanish");
-  // Used to trigger shuffle animation when language changes
-  const [langShuffleKey, setLangShuffleKey] = useState<number>(0);
 
   // Per-card state: whether the card is showing the translation in the bottom left
   // We'll use a map from cardIdx to boolean (true = show translation, false = hide translation)
@@ -106,13 +125,36 @@ export default function Flashcards() {
   );
 
   // Helper to reset cards in with new language selection
-  
+  // (no-op, handled in useEffect below)
+
+  // When category changes, reset all per-card state and anims
+  useEffect(() => {
+    setInitialRotations(Array.from({ length: CARD_COUNT }, () => getRandomRotation()));
+    setAnims(
+      Array.from({ length: CARD_COUNT }, () => ({
+        top: -2000,
+        opacity: 1,
+        transition: "none",
+        rotate: 0,
+        x: 0,
+      }))
+    );
+    setQueue(Array.from({ length: CARD_COUNT }, (_, i) => i));
+    setAnimatingOutCards(new Set());
+    setDraggingIdx(null);
+    setShowTranslation(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
+    setCardFlipped(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
+    setCardFilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
+    setCardFillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
+    setCardUnfilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
+    setCardUnfillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
+    setLangShuffleKey((k) => k + 1); // force shuffle animation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, CARD_COUNT]);
 
   useEffect(() => {
     // Only run on client
-    setInitialRotations(Array.from({ length: CARD_COUNT }, () => getRandomRotation()));
     setMounted(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -376,7 +418,7 @@ export default function Flashcards() {
     // eslint-disable-next-line
   }, []);
 
-  // Handle language change: shuffle out, then shuffle in with new language
+  // Handle language or category change: shuffle out, then shuffle in with new language/category
   function handleLangChange(type: "from" | "to", value: string): void {
     if (type === "from") {
       setFromLang(value);
@@ -414,6 +456,29 @@ export default function Flashcards() {
       setCardUnfilling(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, false])));
       // Reset all cards to unfill progress 0
       setCardUnfillProgress(Object.fromEntries(Array.from({ length: CARD_COUNT }, (_, i) => [i, 0])));
+    }, 400);
+  }
+
+  function handleCategoryChange(value: string): void {
+    // Animate all cards out (shuffle out)
+    setAnims((prev) => {
+      const next = [...prev];
+      queue.forEach((cardIdx, i) => {
+        next[cardIdx] = {
+          ...next[cardIdx],
+          x: (i % 2 === 0 ? 1 : -1) * 800,
+          opacity: 0,
+          transition:
+            "transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1)",
+        };
+      });
+      return next;
+    });
+
+    // After shuffle out, change category and shuffle in new cards
+    setTimeout(() => {
+      setCategory(value);
+      // The useEffect on [category, CARD_COUNT] will handle resetting state and anims and incrementing langShuffleKey
     }, 400);
   }
 
@@ -558,9 +623,6 @@ export default function Flashcards() {
 
           // Get the word for this card
           const word = words[cardIdx];
-
-          // Always show the fromLang word in the center
-          // const shownLang = fromLang;
 
           // The button label: "Show [other language]"
           const flipButtonLabel = !showTranslation[cardIdx]
@@ -748,6 +810,23 @@ export default function Flashcards() {
             {LANGUAGES.filter((l) => l.code !== fromLang).map((lang) => (
               <option key={lang.code} value={lang.code}>
                 {lang.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col items-center">
+          <label htmlFor="category" className="mb-2 text-lg text-gray-600 font-semibold">
+            CATEGORY:
+          </label>
+          <select
+            id="category"
+            className="border rounded px-4 py-2 text-lg"
+            value={category}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+          >
+            {CATEGORY_KEYS.map((cat) => (
+              <option key={cat} value={cat}>
+                {CATEGORY_LABELS[cat] || cat}
               </option>
             ))}
           </select>

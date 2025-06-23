@@ -1,12 +1,53 @@
-[
-  { "english": "Apple", "spanish": "Manzana", "german": "Apfel" },
-  { "english": "House", "spanish": "Casa", "german": "Haus" },
-  { "english": "Dog", "spanish": "Perro", "german": "Hund" },
-  { "english": "Cat", "spanish": "Gato", "german": "Katze" },
-  { "english": "Book", "spanish": "Libro", "german": "Buch" },
-  { "english": "Water", "spanish": "Agua", "german": "Wasser" },
-  { "english": "Car", "spanish": "Coche", "german": "Auto" },
-  { "english": "Sun", "spanish": "Sol", "german": "Sonne" },
-  { "english": "School", "spanish": "Escuela", "german": "Schule" },
-  { "english": "Friend", "spanish": "Amigo", "german": "Freund" }
-]
+{
+  "basic_interactions": [
+    { "english": "Hello", "spanish": "Hola", "german": "Hallo" },
+    { "english": "Goodbye", "spanish": "Adiós", "german": "Auf Wiedersehen" },
+    { "english": "Please", "spanish": "Por favor", "german": "Bitte" },
+    { "english": "Thank you", "spanish": "Gracias", "german": "Danke" },
+    { "english": "Yes", "spanish": "Sí", "german": "Ja" },
+    { "english": "No", "spanish": "No", "german": "Nein" }
+  ],
+  "common_statements": [
+    { "english": "How are you?", "spanish": "¿Cómo estás?", "german": "Wie geht's?" },
+    { "english": "My name is...", "spanish": "Me llamo...", "german": "Ich heiße..." },
+    { "english": "I don't understand", "spanish": "No entiendo", "german": "Ich verstehe nicht" },
+    { "english": "Where is the bathroom?", "spanish": "¿Dónde está el baño?", "german": "Wo ist die Toilette?" }
+  ],
+  "days": [
+    { "english": "Monday", "spanish": "Lunes", "german": "Montag" },
+    { "english": "Tuesday", "spanish": "Martes", "german": "Dienstag" },
+    { "english": "Wednesday", "spanish": "Miércoles", "german": "Mittwoch" },
+    { "english": "Thursday", "spanish": "Jueves", "german": "Donnerstag" },
+    { "english": "Friday", "spanish": "Viernes", "german": "Freitag" },
+    { "english": "Saturday", "spanish": "Sábado", "german": "Samstag" },
+    { "english": "Sunday", "spanish": "Domingo", "german": "Sonntag" }
+  ],
+  "numbers": [
+    { "english": "One", "spanish": "Uno", "german": "Eins" },
+    { "english": "Two", "spanish": "Dos", "german": "Zwei" },
+    { "english": "Three", "spanish": "Tres", "german": "Drei" },
+    { "english": "Four", "spanish": "Cuatro", "german": "Vier" },
+    { "english": "Five", "spanish": "Cinco", "german": "Fünf" },
+    { "english": "Six", "spanish": "Seis", "german": "Sechs" },
+    { "english": "Seven", "spanish": "Siete", "german": "Sieben" },
+    { "english": "Eight", "spanish": "Ocho", "german": "Acht" },
+    { "english": "Nine", "spanish": "Nueve", "german": "Neun" },
+    { "english": "Ten", "spanish": "Diez", "german": "Zehn" }
+  ],
+  "verbs": [
+    { "english": "To be", "spanish": "Ser/Estar", "german": "Sein" },
+    { "english": "To have", "spanish": "Tener", "german": "Haben" },
+    { "english": "To go", "spanish": "Ir", "german": "Gehen" },
+    { "english": "To eat", "spanish": "Comer", "german": "Essen" },
+    { "english": "To drink", "spanish": "Beber", "german": "Trinken" },
+    { "english": "To see", "spanish": "Ver", "german": "Sehen" }
+  ],
+  "colors": [
+    { "english": "Red", "spanish": "Rojo", "german": "Rot" },
+    { "english": "Blue", "spanish": "Azul", "german": "Blau" },
+    { "english": "Green", "spanish": "Verde", "german": "Grün" },
+    { "english": "Yellow", "spanish": "Amarillo", "german": "Gelb" },
+    { "english": "Black", "spanish": "Negro", "german": "Schwarz" },
+    { "english": "White", "spanish": "Blanco", "german": "Weiß" }
+  ]
+}
