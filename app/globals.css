@@ -8,12 +8,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-concert);
-  --font-mono: var(--font-concert);
+  --font-sans: var(--font-figtree);
+  --font-mono: var(--font-figtree);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-concert);
+    font-family: var(--font-figtree);
 }

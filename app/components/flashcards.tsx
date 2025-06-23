@@ -847,7 +847,7 @@ export default function Flashcards() {
           );
         })}
       </div>
-      <div className="flex flex-row gap-4 mt-12 items-center">
+      <div className="flex flex-row gap-4 -mt-2 items-center">
         <div className="flex">
           <label htmlFor="from-lang" className="text-lg mr-2 pt-0.5">
             Learn

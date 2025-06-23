@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Concert_One } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 
-const concert = Concert_One({
-  variable: "--font-concert",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
   weight: ["400"],
 });
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${concert.variable} antialiased`}
+        className={`${figtree.variable} antialiased`}
       >
         {children}
       </body>
